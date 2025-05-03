@@ -1,0 +1,225 @@
+<div class="portfolio-container" *ngIf="!isLoading">
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="portfolio && !error" class="portfolio-content">
+    <mat-card class="portfolio-summary">
+      <mat-card-header>
+        <mat-card-title>Portfolio Summary</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="label">Total Balance</span>
+            <span class="value">{{ portfolio.totalBalance | currency }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Risk Profile</span>
+            <span class="value">{{
+              showQuestionnaire()
+                ? "Unknown"
+                : investorProfile?.riskBucket || "N/A"
+            }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Last Updated</span>
+            <span class="value">{{ portfolio.lastUpdated | date }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    @if (showQuestionnaire()) {
+    <app-investment-survey
+      (surveyCompleted)="onSurveyCompleted()"
+    ></app-investment-survey>
+    } @else if (showDashboard()) {
+    <div class="charts-container">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Asset Allocation</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ngx-charts-pie-chart
+            *ngIf="pieChartData.length > 0"
+            [results]="pieChartData"
+            [gradient]="gradient"
+            [legend]="showLegend"
+            [labels]="true"
+            [doughnut]="true"
+            [arcWidth]="0.4"
+            [view]="view"
+            [colorScheme]="colorScheme"
+          >
+          </ngx-charts-pie-chart>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Performance</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ngx-charts-line-chart
+            *ngIf="performanceData.length > 0"
+            [results]="performanceData"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            [view]="view"
+            [colorScheme]="colorScheme"
+            [timeline]="timeline"
+            [autoScale]="autoScale"
+            [roundDomains]="true"
+            [curve]="curveLinear"
+            [rangeFillOpacity]="0.15"
+            [animations]="true"
+            [tooltipDisabled]="false"
+            [showGridLines]="true"
+            [strokeWidth]="3"
+          >
+          </ngx-charts-line-chart>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="recommendations-card">
+      <mat-card-header>
+        <mat-card-title>Investment Recommendations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="recommendations-content">
+          @if (investorProfile?.riskBucket === 'Conservative') {
+          <div class="recommendation-item">
+            <mat-icon>trending_up</mat-icon>
+            <span
+              >Focus on stable, low-risk investments like government bonds and
+              blue-chip stocks</span
+            >
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>security</mat-icon>
+            <span
+              >Maintain a higher allocation to fixed-income securities
+              (60-70%)</span
+            >
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>balance</mat-icon>
+            <span>Consider dividend-paying stocks for steady income</span>
+          </div>
+          } @else if (investorProfile?.riskBucket === 'Balanced') {
+          <div class="recommendation-item">
+            <mat-icon>trending_up</mat-icon>
+            <span
+              >Maintain a balanced mix of stocks and bonds (50-50 split)</span
+            >
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>diversity_3</mat-icon>
+            <span>Diversify across different sectors and asset classes</span>
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>insights</mat-icon>
+            <span>Consider index funds for broad market exposure</span>
+          </div>
+          } @else if (investorProfile?.riskBucket === 'Aggressive') {
+          <div class="recommendation-item">
+            <mat-icon>rocket_launch</mat-icon>
+            <span>Focus on growth stocks and emerging markets</span>
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>trending_up</mat-icon>
+            <span>Consider higher allocation to equities (70-80%)</span>
+          </div>
+          <div class="recommendation-item">
+            <mat-icon>auto_graph</mat-icon>
+            <span
+              >Look for opportunities in innovative sectors and
+              technologies</span
+            >
+          </div>
+          } @else {
+          <div class="recommendation-item">
+            <mat-icon>help_outline</mat-icon>
+            <span
+              >Complete the investment survey to get personalized
+              recommendations</span
+            >
+          </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chat-card">
+      <mat-card-header>
+        <mat-card-title>AI Assistant</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chat-messages">
+          <div class="message message assistant-message">
+            <span> Do you consent to start rebalancing your portfolio? </span>
+          </div>
+          <div
+            *ngFor="let message of chatMessages"
+            [class.user-message]="message.isUser"
+            [class.assistant-message]="!message.isUser"
+            class="message"
+          >
+            {{ message.text }}
+          </div>
+        </div>
+        <div class="chat-input">
+          <mat-form-field appearance="outline" class="message-input">
+            <input
+              matInput
+              [(ngModel)]="chatMessage"
+              placeholder="Ask about your portfolio..."
+              (keyup.enter)="sendMessage()"
+            />
+          </mat-form-field>
+          <button
+            mat-raised-button
+            class="send-button"
+            color="primary"
+            (click)="sendMessage()"
+          >
+            Send
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#ff7819"
+  type="ball-scale-multiple"
+  [fullScreen]="true"
+  [showSpinner]="true"
+>
+  <div class="loading-sequence" *ngIf="showAnalyzerLoader">
+    <app-loading-sequence-item
+      text="We are checking your investment preferences"
+      [isComplete]="step1Complete"
+    />
+    <app-loading-sequence-item
+      text="Create personalized portfolio"
+      [isComplete]="step2Complete"
+    />
+    <app-loading-sequence-item
+      text="Generate suggestions"
+      [isComplete]="step3Complete"
+    />
+  </div>
+</ngx-spinner>

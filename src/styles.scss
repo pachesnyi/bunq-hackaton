@@ -1,0 +1,67 @@
+/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+@use "app/styles/grid" as grid;
+@use "sass:math";
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+$primary-color: #ff7819;
+
+main {
+  height: 100%;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+}
+html {
+  color-scheme: light dark;
+
+  @include mat.theme(
+    (
+      color: mat.$cyan-palette,
+      typography: Montserrat,
+      density: 0,
+    )
+  );
+}
+
+:root {
+  --var-primary-color: #ff7819;
+  --mat-sys-title-large-size: 1.2rem;
+  --mat-sys-title-large-weight: 500;
+
+  .mat-toolbar {
+    background-color: $primary-color;
+  }
+
+  @include mat.button-overrides(
+    (
+      filled-container-color: $primary-color,
+      filled-label-text-color: white,
+      filled-label-text-weight: 700,
+    )
+  );
+
+  :root {
+    @include mat.card-overrides(
+      (
+        subtitle-text-color: $primary-color,
+        elevated-container-color: $primary-color,
+        outlined-container-color: $primary-color,
+      )
+    );
+  }
+}
+
+.ngx-charts {
+  text {
+    fill: #fff !important;
+    font-weight: 700 !important;
+  }
+}

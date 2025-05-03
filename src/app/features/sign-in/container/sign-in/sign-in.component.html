@@ -1,0 +1,33 @@
+<div class="sign-in">
+  <img class="sign-in__image" src="assets/main-logo-2.svg" alt="Bunq Logo" />
+
+  <img class="sign-in__image" src="assets/qr.jpg" alt="Bunq Logo" />
+
+  <!-- <button mat-flat-button color="primary" (click)="signIn()">
+    Sign In with bunq
+  </button> -->
+
+  <ngx-spinner
+    bdColor="rgba(0, 0, 0, 0.8)"
+    size="medium"
+    color="#ff7819"
+    type="ball-scale-multiple"
+    [fullScreen]="true"
+    [showSpinner]="true"
+  >
+    <div class="loading-sequence" *ngIf="showLoadingSequence">
+      <app-loading-sequence-item
+        text="Initializing transaction vector normalization protocols"
+        [isComplete]="step1Complete"
+      />
+      <app-loading-sequence-item
+        text="Running Monte Carlo simulations on discretionary expenditure patterns"
+        [isComplete]="step2Complete"
+      />
+      <app-loading-sequence-item
+        text="Finalizing risk-adjusted investment profile through multi-dimensional scaling"
+        [isComplete]="step3Complete"
+      />
+    </div>
+  </ngx-spinner>
+</div>

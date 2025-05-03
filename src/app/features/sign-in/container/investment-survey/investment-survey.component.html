@@ -1,0 +1,77 @@
+<div class="survey-container">
+  <mat-card class="survey-card">
+    <mat-card-header>
+      <mat-card-title>Investment Preferences Survey</mat-card-title>
+      <mat-card-subtitle>
+        Help us understand your investment goals and risk profile
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="progress"
+        class="progress-bar"
+      ></mat-progress-bar>
+
+      <div class="question-container">
+        <h2 class="question-title">{{ currentQuestion.question }}</h2>
+        <p class="question-description" *ngIf="currentQuestion.description">
+          {{ currentQuestion.description }}
+        </p>
+
+        <div class="options-container">
+          <!-- Radio buttons -->
+          <mat-radio-group
+            *ngIf="currentQuestion.type === 'radio'"
+            [(ngModel)]="answers[currentQuestion.id]"
+            (change)="onAnswerChange($event.value)"
+            class="radio-group"
+          >
+            <mat-radio-button
+              *ngFor="let option of currentQuestion.options"
+              [value]="option.value"
+              class="radio-option"
+            >
+              {{ option.label }}
+            </mat-radio-button>
+          </mat-radio-group>
+
+          <!-- Checkboxes -->
+          <div
+            *ngIf="currentQuestion.type === 'checkbox'"
+            class="checkbox-group"
+          >
+            <mat-checkbox
+              *ngFor="let option of currentQuestion.options"
+              [value]="option.value"
+              (change)="onCheckboxChange($event)"
+              class="checkbox-option"
+            >
+              {{ option.label }}
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="actions">
+      <button
+        mat-button
+        color="primary"
+        (click)="previousQuestion()"
+        [disabled]="currentQuestionIndex === 0"
+      >
+        Previous
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="nextQuestion()"
+        [disabled]="isNextDisabled()"
+      >
+        {{ currentQuestionIndex === questions.length - 1 ? "Submit" : "Next" }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

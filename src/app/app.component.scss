@@ -1,0 +1,64 @@
+@use "@angular/material" as mat;
+
+.center-content {
+  height: 100vh;
+  width: 100%;
+  background-color: #1a1a1a;
+}
+
+// Global styles
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+// Material theme overrides
+::ng-deep {
+  .mat-mdc-card {
+    border-radius: 8px;
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+
+  .mat-mdc-card-header {
+    padding: 16px;
+    background-color: #333333 !important;
+    color: #ffffff;
+    border-bottom: 1px solid #404040;
+  }
+
+  .mat-mdc-card-content {
+    padding: 16px;
+  }
+
+  .mat-mdc-form-field {
+    width: 100%;
+
+    .mat-mdc-form-field-flex {
+      background-color: #2d2d2d;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      background-color: #2d2d2d;
+    }
+
+    .mat-mdc-form-field-label {
+      color: #b0b0b0;
+    }
+
+    .mat-mdc-input-element {
+      color: #ffffff;
+    }
+  }
+
+  .mat-mdc-button {
+    &.mat-primary {
+      background-color: #1976d2;
+      color: #ffffff;
+    }
+  }
+}

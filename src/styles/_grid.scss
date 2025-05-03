@@ -1,0 +1,76 @@
+// Grid system variables
+$grid-columns: 12;
+$grid-gap: 1rem;
+$container-padding: 1rem;
+$breakpoints: (
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+);
+
+// Container
+.container {
+  width: 100%;
+  padding-right: $container-padding;
+  padding-left: $container-padding;
+  margin-right: auto;
+  margin-left: auto;
+
+  @each $breakpoint, $width in $breakpoints {
+    @media (min-width: $width) {
+      max-width: $width;
+    }
+  }
+}
+
+// Grid
+.grid {
+  display: grid;
+  gap: $grid-gap;
+  grid-template-columns: repeat($grid-columns, 1fr);
+}
+
+// Column classes
+@for $i from 1 through $grid-columns {
+  .col-#{$i} {
+    grid-column: span $i;
+  }
+}
+
+// Responsive column classes
+@each $breakpoint, $width in $breakpoints {
+  @media (min-width: $width) {
+    @for $i from 1 through $grid-columns {
+      .col-#{$breakpoint}-#{$i} {
+        grid-column: span $i;
+      }
+    }
+  }
+}
+
+// Utility classes
+.row {
+  display: grid;
+  gap: $grid-gap;
+}
+
+.gap-0 {
+  gap: 0;
+}
+.gap-1 {
+  gap: 0.25rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 1rem;
+}
+.gap-4 {
+  gap: 1.5rem;
+}
+.gap-5 {
+  gap: 3rem;
+}
